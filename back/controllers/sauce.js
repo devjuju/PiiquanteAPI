@@ -83,25 +83,25 @@ exports.getAllSauces= (req, res, next) => {
 
 
 exports.likeSauce = (req, res, next) => {
-  let liked = req.body.like;
-  console.log(liked);
-  if (liked === 1) {  // J'aime
-      Sauce.updateOne( {_id:req.params.id, usersLiked: req.body.userId}, { $push: { usersLiked: req.body.userId }, $inc: { likes: 1 } })
+  if (req.body.like === 1) {  // J'aime
+      Sauce.updateOne( {_id:req.params.id}, { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 } })
         .then(() => res.status(200).json({ message: 'Like ajouté !'}))
         .catch(error => res.status(400).json({ error }));
-  } else if (liked === -1) {  // Je n'aime pas
-      Sauce.updateOne( {_id:req.params.id, usersLiked: req.body.userId}, { $push: { usersDisliked: req.body.userId }, $inc: { dislikes: 1 } })
+
+  } else if (req.body.like === -1) {  // Je n'aime pas
+      Sauce.updateOne( {_id:req.params.id}, { $push: { usersDisliked: req.body.userId }, $inc: { dislikes: +1 } })
         .then(() => res.status(200).json({ message: 'Dislike ajouté !'}))
         .catch(error => res.status(400).json({ error }));
+        
   } else {  // Je n'ai plus d'avis
       Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
           if (sauce.usersLiked.includes(req.body.userId)) {
-            Sauce.updateOne( {_id:req.params.id, usersLiked: req.body.userId}, { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } })
+            Sauce.updateOne( {_id:req.params.id}, { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } })
               .then(() => res.status(200).json({ message: 'Like supprimé !'}))
               .catch(error => res.status(400).json({ error }))
           } else if (sauce.usersDisliked.includes(req.body.userId)) {
-            Sauce.updateOne( {_id:req.params.id, usersLiked: req.body.userId}, { $pull: { usersDisliked: req.body.userId }, $inc: { dislikes: -1 } })
+            Sauce.updateOne( {_id:req.params.id}, { $pull: { usersDisliked: req.body.userId }, $inc: { dislikes: -1 } })
               .then(() => res.status(200).json({ message: 'Dislike supprimé !'}))
               .catch(error => res.status(400).json({ error }))
           }
@@ -109,4 +109,3 @@ exports.likeSauce = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
   }
 };
-
