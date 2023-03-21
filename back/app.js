@@ -12,6 +12,7 @@ const userRoutes = require("./routes/user");
 
 // MongoDB Atlas permet d'héberger gratuitement une base de données MongoDB.
 // Le package Mongoose facilite les interactions entre votre application Express et votre base de données MongoDB.
+// Il gère la gestion des erreurs 
 mongoose.connect('mongodb+srv://piiquante00user:78R99E9Z989E@cluster0.zogiiyb.mongodb.net/test',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
